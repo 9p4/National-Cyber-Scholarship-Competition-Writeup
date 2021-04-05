@@ -16,6 +16,8 @@ This one is a simple overflow stack smash. Spamming `a` roughly a hundred times 
 
 ### CM01
 
+This one appears harder than it actually is. In order to solve this one, you have to first realize that one of the images (code.png) is actually two QR codes on top of each other, with a xorred pattern. The first QR code is from frame.png, and we just have to subtract the two. In order to do this, I used GIMP and made each image a layer (with code.png on top). Then, I modified the code.png layer to use the "exclusion" mode, and got a new QR code. [See the save file](CM01.xcf). The data in this one is our flag: `A_Code_For_A_Code`.
+
 ### CM02
 
 This is a trivial substitution cipher. Replacing all of the emojis with letters, we can run a frequency analysis on it. My substitution order looks like this: `GDCLEPJFBIHMQNOSRTKAUVYWZX, ETAONIHSRDLUMCWFYGPBVKXJQZ`. I used [Boxentriq](https://www.boxentriq.com/code-breaking/frequency-analysis) to do the frequency analysis, and [Dcode](https://www.dcode.fr/monoalphabetic-substitution) to do the solving. After running this, we find that X and Q were mixed up, and fixing that gives us the flag of `FREQUENTLY_SUBSTITUTE_FROWNY_FACE_FOR_SMILEY_FACE`.
