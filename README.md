@@ -1,4 +1,4 @@
-# National-Cyber-Scholarship-Competition-Writeup
+# National Cyber Scholarship Competition Writeup
 
 ## Binary
 
@@ -40,7 +40,7 @@ Looking at the file, we can run a basic grep on it. We know it's sixteen charact
 
 ### FM02
 
-Opening the file we are given in Wireshark and filtering all of the packets by IRC, we can extract an encrypted file, and get the password. Once we extract the file, we have an NES ROM image which has the flag embedded in it: `NESted_in_a_PCAP`. However, this doesn't appear to work on the website at the current moment.
+Opening the file we are given in Wireshark and filtering all of the packets by IRC, we can extract an encrypted file, and get the password. Once we extract the file, we have an NES ROM image which has the flag embedded in it: `NESted_in_a_PCAP`.
 
 ## Networking
 
@@ -51,3 +51,13 @@ Running Nmap against the host gives us no results. This is because the host is d
 ### NM01
 
 This time, when we netcat to the host, we have to convert the message into the output. If you look closely, the cipher repeats itself, so we can spam the host to get the answer. `while [ 1 = 1 ]; do echo "AAAAAA" | nc cfta-nm01.allyourbases.co 8017; done` eventually gives us the flag `o[hex]=>i[ascii]=:)`.
+
+## Web
+
+### WE01
+
+Copying the code that appears (by pressing Control+U / whatever it is on MacOS to view source) and executing it as JavaScript gives us the flag of `unicode+obfuscation=js*fun`.
+
+### WE02
+
+Opening the website, we are told that there is a secret page. A quick check to `robots.txt` gives us a path that isn't indexed: `/4ext6b6.html`. Navigating to this page gives us the flag of `Shhh_robot_you_said_too_much!`.
