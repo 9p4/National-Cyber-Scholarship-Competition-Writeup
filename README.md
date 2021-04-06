@@ -40,6 +40,10 @@ Extracting the image and all of the tars into one location gives us a mini-files
 
 Looking at the file, we can run a basic grep on it. We know it's sixteen characters, so if we run `egrep '..x............S' 50k-users.txt | grep Z` and look for the one that has a number from 2-6 after the x, we get our flag of `YXx52hsi3ZQ5b9rS`.
 
+### FM01
+
+Opening the image, we are confronted with rainbow vomit. This is just a distraction. If you open the metadata of the image, the flag is there under `photoshop:TextLayers[1]/photoshop:LayerName`: `tr4il3r_p4rk`.
+
 ### FM02
 
 Opening the file we are given in Wireshark and filtering all of the packets by IRC, we can extract an encrypted file, and get the password. Once we extract the file, we have an NES ROM image which has the flag embedded in it: `NESted_in_a_PCAP`.
@@ -63,3 +67,7 @@ Copying the code that appears (by pressing Control+U / whatever it is on MacOS t
 ### WE02
 
 Opening the website, we are told that there is a secret page. A quick check to `robots.txt` gives us a path that isn't indexed: `/4ext6b6.html`. Navigating to this page gives us the flag of `Shhh_robot_you_said_too_much!`.
+
+### WM02
+
+Opening the website and reading through the JavaScript, it appears that we are authorized by the hash of the username and user id combined and reversed. So, we know what the hash function is, and by re-pasting most of the JavaScript into the console and hashing with the username of admin and user id of zero (just a hunch), we are able to log in and get the flag of `epoch_wizard`.
