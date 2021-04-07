@@ -1,5 +1,7 @@
 # National Cyber Scholarship Competition Writeup
 
+For this CTF, I used [Rizin](https://rizin.re/) for binary and a disposable Kali VM for running programs (safety first!).
+
 ## Binary
 
 ### BE01
@@ -11,6 +13,8 @@ Downloading the PDF and running binwalk on it gives us a zip file embedded in th
 This one is a simple overflow stack smash. Spamming `a` roughly a hundred times in the input of the program gives us the flag of `luckyNumber13`.
 
 ### BM01
+
+This one appears to be in Russian. The question asks "what is the password?". So, lets figure out the password. Running `rz-bin -z program` gives us the list of strings used in the program. Let's try them out one by one. The first one, `молоток123` is the password, and we get the flag of `wh1te%BluE$R3d`.
 
 ## Crypto
 
