@@ -16,6 +16,51 @@ This one is a simple overflow stack smash. Spamming `a` roughly a hundred times 
 
 This one appears to be in Russian. The question asks "what is the password?". So, lets figure out the password. Running `rz-bin -z program` gives us the list of strings used in the program. Let's try them out one by one. The first one, `молоток123` is the password, and we get the flag of `wh1te%BluE$R3d`.
 
+### BM03
+
+Opening this file in Rizin gives us the following disassembly of the main function:
+
+```
+; DATA XREF from entry0 @ 0x69d
+            ;-- main:
+┌ int dbg.main (int argc, char **argv, char **envp);
+│           ; var int rows @ rbp-0x8
+│           ; var int cols @ rbp-0x4
+│           0x000008cd      push  rbp                                  ; flag.c:29 ; int main();
+│           0x000008ce      mov   rbp, rsp
+│           0x000008d1      sub   rsp, 0x10
+│           0x000008d5      mov   rax, qword [obj.stdout]              ; flag.c:30 ; obj.__TMC_END
+│                                                                      ; [0x202010:8]=0
+│           0x000008dc      mov   rdi, rax                             ; FILE *stream
+│           0x000008df      call  sym.imp.fflush                       ; int fflush(FILE *stream)
+│           0x000008e4      lea   rdi, str.e_36m_Flag:_e_0m            ; flag.c:32 ; 0x11f8 ; "\n\x1b[36m Flag:\x1b[0m" ; const char *s
+│           0x000008eb      call  sym.imp.puts                         ; int puts(const char *s)
+│           0x000008f0      mov   dword [rows], 2                      ; flag.c:34
+│           0x000008f7      mov   dword [cols], 0x55                   ; flag.c:35 ; 'U'
+│           0x000008fe      mov   edx, dword [cols]                    ; flag.c:37
+│           0x00000901      mov   eax, dword [rows]
+│           0x00000904      mov   esi, edx
+│           0x00000906      mov   edi, eax
+│           0x00000908      call  dbg.output
+│           ; DATA XREF from dbg.main @ 0x8e4
+│           0x0000090d      mov   eax, 0
+│           0x00000912      leave                                      ; flag.c:38
+└           0x00000913      ret
+```
+
+To simplify, what is happening here is that the function `output` is being called with two arguments: 2, and 0x55. Let's figure out what's going on in that function. (I've truncated this to the relavant section).
+
+```
+0x0000088f      mov   eax, dword [i]
+│      ╎    0x00000895      cmp   eax, dword [rows]
+│      └──< 0x0000089b      jl    0x807
+│           0x000008a1      cmp   dword [rows], 5                      ; flag.c:23
+│       ┌─< 0x000008a8      jg    0x8b6
+│       │   0x000008aa      lea   rdi, str.e_31m_Error_displaying_rest_of_flag_e_0m ; flag.c:24 ; 0x9c0 ; const char *s
+```
+
+Here is our error message. It checks if the `rows` argument (the first one) is less than or equal to five, then gives us the error message. So, we have to run the function with a different argument. How do we do that? Simple, we use [GDB](https://www.gnu.org/software/gdb/). Opening the program in GDB with `gdb ./flag` and setting a breakpoint at the main function with `break main` gives us a base to work on the program. Next, we have to run the actual function. Thanks to [bestredteam's blog post](https://bestestredteam.com/2020/05/01/calling-functions-with-gdb/) on calling functions, all we have to run is `print (void) output (6, 0x55)`. We have the flag: `debugging_ftw`.
+
 ## Crypto
 
 ### CM01
