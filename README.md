@@ -16,6 +16,35 @@ This one is a simple overflow stack smash. Spamming `a` roughly a hundred times 
 
 This one appears to be in Russian. The question asks "what is the password?". So, lets figure out the password. Running `rz-bin -z program` gives us the list of strings used in the program. Let's try them out one by one. The first one, `молоток123` is the password, and we get the flag of `wh1te%BluE$R3d`.
 
+### BM02
+
+Running the program gives us no usable output. It even appears to be taunting us! This simply won't do. Let's open up the disassembly and see what is going on in the background. I opened this with the `-w` flag so we can edit the file from Rizin.
+
+```
+           ; DATA XREF from entry0 @ 0x5bd
+┌ int main (int argc, char **argv, char **envp);
+│           ; var uint32_t var_4h @ rbp-0x4
+│           0x000007e3      push  rbp
+│           0x000007e4      mov   rbp, rsp
+│           0x000007e7      sub   rsp, 0x10
+│           0x000007eb      mov   dword [var_4h], 1
+│           0x000007f2      cmp   dword [var_4h], 0x539
+│       ┌─< 0x000007f9      jne   0x807
+│       │   0x000007fb      mov   eax, dword [var_4h]
+│       │   0x000007fe      mov   edi, eax
+│       │   0x00000800      call  sym.printFlag
+│      ┌──< 0x00000805      jmp   0x813
+│      ││   ; CODE XREF from main @ 0x7f9
+│      │└─> 0x00000807      lea   rdi, str.I_m_not_going_to_make_it_that_easy_for_you. ; 0x8a8 ; "I'm not going to make it that easy for you." ; const char *s
+│      │    0x0000080e      call  sym.imp.puts                         ; int puts(const char *s)
+│      │    ; CODE XREF from main @ 0x805
+│      └──> 0x00000813      mov   eax, 0
+│           0x00000818      leave
+└           0x00000819      ret
+```
+
+A quick look at the program shows us that it is setting a variable `var_4h` to 1, then checking if it is the value at `0x539`. Naturally, this is going to fail. How do we fix this? Simple, with patching. I am using Rizin for this, but the same instructions can be applied to Radare2. First, we have to open up visual mode with `V` (enter), and switch to the disassembly view with `p`. Looking at the comment, we have `var uint32_t var_4h @ rbp-0x4`. This is important for later. "Scroll" down to the line we want to patch at `0x7eb` and press `A`. This will put us into edit mode, and we can directly type in the Assembly code. However, if we want to just replace the `1` with `0x539`, then we can't just type in `mov dword [var_4h], 0x539`. That won't work, if you tried it out. What we need to do is to replace the variable reference with the actual register. That is what the comment earlier was for. So, in our case, the code would look like so: `mov dword [rbp-0x4], 0x539`. You ought to see the hex being automatically generated. Pressing enter and later `y` when prompted will save the changes you have made. Running the patched program gives us the flag: `patchItFixIt`.
+
 ### BM03
 
 Opening this file in Rizin gives us the following disassembly of the main function:
