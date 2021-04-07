@@ -1,6 +1,6 @@
 # National Cyber Scholarship Competition Writeup
 
-For this CTF, I used [Rizin](https://rizin.re/) for binary analysis / editing and a disposable Kali VM for running suspicious programs.
+For this CTF, I used [Rizin](https://rizin.re/) for binary analysis / editing and a disposable Kali VM for running suspicious programs. PRs and issues are welcome, but as the competition is closed, I can't access any of the problems anymore.
 
 ## Binary
 
